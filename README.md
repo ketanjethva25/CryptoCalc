@@ -13,19 +13,6 @@
 
 </div>
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [How It Works](#how-it-works)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [API Reference](#api-reference)
-- [Deployment](#deployment)
-- [Design Decisions](#design-decisions)
-- [Limitations and Future Improvements](#limitations-and-future-improvements)
-
 ## Overview
 
 Crypto prices move fast. This app answers one simple question: **"If the price changes by X%, how much will I gain or lose?"**
