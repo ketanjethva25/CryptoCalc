@@ -1,84 +1,178 @@
-# Price Change Impact Calculator
+<div align="center">
 
-A simple web app that shows how much a crypto holding would gain or lose if the coin price rises or falls by a chosen percentage. Results are shown in the user's local currency.
+# CryptoCalc: Price Change Impact Calculator
 
-**Live demo:** `ADD-YOUR-VERCEL-LINK-HERE`
+**See how a crypto price rise or fall changes the value of your holding, in your own currency.**
+
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?logo=vercel&logoColor=white)
+
+[**Live Demo**](ADD-YOUR-VERCEL-LINK-HERE) · [Report a Bug](../../issues)
+
+</div>
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [How It Works](#how-it-works)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [API Reference](#api-reference)
+- [Deployment](#deployment)
+- [Design Decisions](#design-decisions)
+- [Limitations and Future Improvements](#limitations-and-future-improvements)
+
+## Overview
+
+Crypto prices move fast. This app answers one simple question: **"If the price changes by X%, how much will I gain or lose?"**
+
+The user picks a coin, enters how much they hold, chooses a currency and sets a possible price change. The app shows the current value, the new value and the gain or loss right away. A chart also shows the result for many other price changes at once.
 
 ## Features
 
-- Brand name: **ImpactLens**, with a custom coin and currency dropdown
-- Impact chart: gain or loss at many different price changes at once
-- Choose a coin, quantity and currency (INR, USD, EUR, GBP, AED)
-- Enter a percentage change with a slider, a number box or quick buttons (±5%, ±10%, ±25%)
-- See the current value, the new value and the gain or loss
-- Live prices from CoinGecko
-- Input checks, loading state and a clear error message with a retry button
-- Responsive layout for mobile, tablet and desktop
+- **Live prices** from the CoinGecko API
+- **Top 50 coins** in a searchable dropdown with real coin icons and live prices
+- **5 currencies** (INR, USD, EUR, GBP, AED) with country flags
+- **Price change input** with a slider, a number box and quick buttons (±5%, ±10%, ±25%)
+- **Result cards** for current value, new value and gain or loss
+- **Impact chart** showing the gain or loss from -50% to +50%, with your chosen change highlighted
+- **Input checks**, loading skeletons and clear error messages with a retry button
+- **Responsive** layout for mobile, tablet and desktop
+- **Accessible**: labels on inputs, keyboard navigation in dropdowns, visible focus and reduced-motion support
 
 ## Tech Stack
 
 | Area | Technology |
 |---|---|
 | Frontend | React 18 (Vite) |
-| Charts | Recharts |
 | Styling | Tailwind CSS v4 |
-| Backend | Vercel serverless function (Node.js) |
-| Price data | CoinGecko API |
+| Charts | Recharts |
 | Icons | Lucide React |
+| Backend | Node.js (Vercel serverless functions) |
+| Data | CoinGecko API |
 | Testing | Vitest |
 | Hosting | Vercel |
 
 ## How It Works
 
-1. The browser asks `/api/price` for the live price of the selected coin.
-2. The serverless function gets the price from CoinGecko and caches it for 60 seconds.
-3. The app calculates the result in `src/utils/calc.js`:
-   - `current value = quantity x price`
-   - `new value = current value x (1 + change% / 100)`
-   - `gain or loss = new value - current value`
+```mermaid
+flowchart LR
+    A[React app in the browser] -- "/api/coins, /api/price" --> B[Vercel serverless functions]
+    B -- "API key stays on the server" --> C[(CoinGecko API)]
+    C --> B --> A
+```
+
+The calculation lives in `src/utils/calc.js`:
+
+| Step | Formula |
+|---|---|
+| Current value | `quantity x price` |
+| New value | `current value x (1 + change% / 100)` |
+| Gain or loss | `new value - current value` |
 
 ## Project Structure
 
 ```
-price-impact-calculator/
-├── api/price.js          # Serverless function (gets live price)
+.
+├── api/
+│   ├── coins.js          # Top 50 coins with icons and live prices
+│   └── price.js          # Live price of one coin
+├── public/
+│   └── favicon.svg
 ├── src/
-│   ├── utils/calc.js     # Calculation logic
-│   ├── utils/calc.test.js# Unit tests
-│   ├── App.jsx           # Main page (navbar, hero, calculator, how it works, FAQ)
-│   ├── index.css         # Colors, font and global styles
+│   ├── components/
+│   │   ├── Dropdown.jsx  # Searchable dropdown (coins and currencies)
+│   │   ├── HeroArt.jsx   # Hero illustration
+│   │   └── motion.jsx    # Scroll reveal and count-up animations
+│   ├── utils/
+│   │   ├── calc.js       # Calculation logic
+│   │   └── calc.test.js  # Unit tests
+│   ├── App.jsx           # Main page
+│   ├── data.js           # Currency list and built-in coin list
+│   ├── useCoins.js       # Loads the live coin list
+│   ├── index.css         # Colors, font and animations
 │   └── main.jsx          # App entry point
-└── README.md
+├── .env.example
+├── index.html
+├── package.json
+└── vite.config.js
 ```
 
 ## Getting Started
 
-You need Node.js 18 or newer.
+### Prerequisites
+
+- Node.js 18 or newer
+- A free CoinGecko Demo API key from [coingecko.com/en/api](https://www.coingecko.com/en/api)
+
+### Installation
 
 ```bash
-npm install        # install packages
-npm test           # run unit tests
-npm run dev        # run the app (the /api function also works locally)
+git clone https://github.com/ketanjethva25/CryptoCalc.git
+cd CryptoCalc
+npm install
 ```
 
-> Open the link shown in the terminal (usually http://localhost:5173). The `/api` function runs locally through a small plugin in `vite.config.js`. `npx vercel dev` also works.
+### Environment variables
 
-## Environment Variables
+Copy `.env.example` to `.env` and add your key:
 
-| Name | Required | Purpose |
+```bash
+# Windows
+copy .env.example .env
+# macOS / Linux
+cp .env.example .env
+```
+
+| Name | Required | Description |
 |---|---|---|
-| `COINGECKO_API_KEY` | No | CoinGecko demo API key for higher rate limits |
+| `COINGECKO_API_KEY` | Yes | CoinGecko Demo API key. It is used only on the server and never sent to the browser. |
 
-For local use, copy `.env.example` to `.env` and paste your key, then restart `npm run dev`. The `.env` file is in `.gitignore`, so it is never uploaded to GitHub.
+### Run
+
+```bash
+npm run dev      # start the app at http://localhost:5173
+npm test         # run unit tests
+npm run build    # create a production build
+```
+
+## API Reference
+
+Both endpoints are Vercel serverless functions. Errors return `{ "error": "message" }`.
+
+| Endpoint | Query parameters | Success response |
+|---|---|---|
+| `GET /api/price` | `coin` (for example `bitcoin`), `currency` (for example `inr`) | `{ "price": 7721100 }` |
+| `GET /api/coins` | `currency` | `[{ "id", "name", "symbol", "image", "current_price" }, ...]` (top 50 coins) |
+
+Responses are cached for 60 seconds to stay within the API limit.
 
 ## Deployment
 
-1. Push this project to GitHub.
-2. Import the repository in Vercel.
-3. (Optional) Add `COINGECKO_API_KEY` in the project settings.
-4. Click Deploy.
+1. Push the code to GitHub.
+2. Import the repository in [Vercel](https://vercel.com).
+3. Add the environment variable `COINGECKO_API_KEY`.
+4. Click **Deploy**. Vercel builds the frontend and runs the `api` folder as serverless functions.
 
-## Limitations
+If you add or change an environment variable later, redeploy so it takes effect.
 
-- Results are estimates and are not financial advice.
-- Free CoinGecko limits can slow down very frequent requests. Caching reduces this.
+## Design Decisions
+
+- **Serverless functions instead of calling CoinGecko from the browser.** This keeps the API key private and lets the app cache responses.
+- **No database.** The app does not need to save anything, so there is nothing to store.
+- **Calculation kept separate from the UI.** The formula is a small pure function, so it is easy to test.
+- **Calm design.** One font, a balanced navy and blue palette, soft shadows and gentle animations. No neon colors or heavy effects.
+
+## Limitations and Future Improvements
+
+- Results are estimates based on today's price. This is not financial advice.
+- The free CoinGecko plan has rate limits. Caching reduces the problem.
+- Ideas for later: save recent calculations in the browser, compare two coins, share a result as a link.
+
+---
+
+Built by **Ketankumar Jethva** as part of the Scalezix internship assessment. Price data by [CoinGecko](https://www.coingecko.com).
