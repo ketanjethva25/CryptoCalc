@@ -1,0 +1,40 @@
+/* Load Tailwind CSS */
+@import "tailwindcss";
+
+/* Design tokens: one font and a calm navy + blue palette */
+@theme {
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --color-paper: #f3f5f9;       /* page background */
+  --color-ink: #1b2433;         /* main text */
+  --color-muted: #647087;       /* secondary text */
+  --color-line: #dfe4ec;        /* borders */
+  --color-navy: #1d2a44;        /* hero background */
+  --color-primary: #3f5fa8;     /* buttons and highlights */
+  --color-accent: #3f5fa8;
+  --color-accent-soft: #e8edf8;
+  --color-hl: #8fb0f0;          /* light blue highlight on dark background */
+  --color-gain: #2c7a55;        /* positive result */
+  --color-loss: #b0453b;        /* negative result */
+  --animate-floaty: floaty 6s ease-in-out infinite;
+  --animate-rise: rise 0.7s ease-out both;
+  --animate-pop: pop 0.15s ease-out both;
+  @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
+}
+
+/* Tabular numbers keep digits the same width, so values line up neatly */
+body { background: var(--color-paper); color: var(--color-ink); font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
+
+/* Clear outline for keyboard users */
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+input[type=range] { accent-color: var(--color-primary); }
+
+/* Smooth scrolling for the navigation links; scroll-padding keeps titles below the sticky navbar */
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+
+/* Soft dot pattern for the hero background */
+.dots { background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1.2px, transparent 1.2px); background-size: 22px 22px; }
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
